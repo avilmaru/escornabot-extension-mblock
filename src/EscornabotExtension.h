@@ -9,8 +9,12 @@
 //
 // HISTORICO:
 // 12/05/2018 v1.0 - Release inicial.
+// 26/08/2018 v1.1 - Incorporación de funciones para la utilización de sensor de ultrasonidos,
+//                   incorporacion parámetro para cambiar el sentido de la marcha,
+//					 funciones de avance y retroceso acordes con el sentido de marcha original
 //
 // ---------------------------------------------------------------------------
+
 
 #ifndef ESCORNABOTEXTENSION_H_
 #define ESCORNABOTEXTENSION_H_
@@ -25,12 +29,21 @@ const uint8_t step_pattern[8] = {
 #endif
 
 #ifdef BUTTONS_ANALOG
+
 const uint16_t bs_analog_value[5] = {
 		BS_ANALOG_VALUE_UP,BS_ANALOG_VALUE_DOWN,BS_ANALOG_VALUE_LEFT,BS_ANALOG_VALUE_RIGHT,BS_ANALOG_VALUE_GO
 };
+
+#if CHANGE_DIRECTION
+const String bs_analog_text[5] = {
+		"DOWN","UP","RIGHT","LEFT","GO"
+};
+#else
 const String bs_analog_text[5] = {
 		"UP","DOWN","LEFT","RIGHT","GO"
 };
+#endif
+
 #endif
 
 class EscornabotExtension {
@@ -66,10 +79,17 @@ public:
 	bool buttonIsPressed(String button);
 	#endif
 
+	// Ultrasonic sensor
+	#if ULTRASONIC_SENSOR
+	bool obstacleDetected(long limitDistance);
+	#endif
+
 private:
 
 	// Stepper Engine
 	#ifdef ENGINE_TYPE_STEPPERS
+	void _moveForward(int16_t units, float speedFactor);
+	void _moveBackward(int16_t units, float speedFactor);
 	void motorStepLeft(uint8_t pattern);
 	void motorStepRight(uint8_t pattern);
 	#endif
@@ -86,6 +106,11 @@ private:
 	// Button Set Analog
 	#ifdef BUTTONS_ANALOG
 	int8_t scanButtons();
+	#endif
+
+	// Ultrasonic sensor
+	#if ULTRASONIC_SENSOR
+	long getDistance();
 	#endif
 
 };

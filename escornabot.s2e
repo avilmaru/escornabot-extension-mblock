@@ -1,11 +1,11 @@
 {	"extensionName": "Escornabot",
 	"description": "Escornabot MBlock Extension (only Arduino Mode)",
-	"version": "1.0",
+	"version": "1.1",
 	"author": "Angel Villanueva (@avilmaru)",
 	"homepage": "mecatronicalab.es",
 	"sort":0,
 	"javascriptURL":"",
-  	"firmware":"1.0.0",
+  	"firmware":"1.1.0",
   	"extensionPort":0,
 	"blockSpecs": [
     
@@ -39,7 +39,10 @@
                 {"setup":"","inc":"#include \"EscornabotExtension.h\"","def":"EscornabotExtension robot;\n","work":"robot.playMelody({0});\n","loop":""}],
 
                 ["b","button %m.botones pressed","ButtonIsPressed","UP",
-                {"setup":"","inc":"#include \"EscornabotExtension.h\"","def":"EscornabotExtension robot;\n","work":"robot.buttonIsPressed({0})","loop":""}]
+                {"setup":"","inc":"#include \"EscornabotExtension.h\"","def":"EscornabotExtension robot;\n","work":"robot.buttonIsPressed({0})","loop":""}],
+
+		["b","obstacle detected distance <= %n cm","ObstacleDetected",10,
+                {"setup":"","inc":"#include \"EscornabotExtension.h\"","def":"EscornabotExtension robot;\n","work":"robot.obstacleDetected({0})","loop":""}]
 
 	],
 	"menus":{
@@ -135,6 +138,7 @@
 			"play note %m.notas with duration %m.duracionnotas":"hacer sonar la nota %m.notas con duración %m.duracionnotas",		
 			"play melody %d.melodias":"hacer sonar la melodía %d.melodias",
 			"button %m.botones pressed":"botón %m.botones pulsado",
+			"obstacle detected distance <= %n cm":"obstáculo detectado a una distancia <= %n cm",
 			"UP":"ADELANTE",
 			"DOWN":"ATRÁS",
 			"LEFT":"IZQUIERDA",

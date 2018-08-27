@@ -89,6 +89,14 @@ See LICENSE.txt for details
 #define KEYPAD_LED_PIN_LEFT A1
 #define KEYPAD_LED_PIN_GO 13
 
+// ultrasonic sensor
+#define ULTRASONIC_SENSOR true
+#define TRIGGER_PIN 11
+#define ECHO_PIN 12
+
+//change direction
+#define CHANGE_DIRECTION false
+
 
 //////////////////////////////////////////////////////////////////////
 ///// Steppers engine setup
@@ -146,10 +154,10 @@ See LICENSE.txt for details
 #define BS_ANALOG_PIN A4
 
 // input values for each key pressed (0 if key doesn't exist)
-#define BS_ANALOG_VALUE_UP 813
-#define BS_ANALOG_VALUE_RIGHT 737
-#define BS_ANALOG_VALUE_DOWN 576
-#define BS_ANALOG_VALUE_LEFT 908
+#define BS_ANALOG_VALUE_UP 576
+#define BS_ANALOG_VALUE_RIGHT 908
+#define BS_ANALOG_VALUE_DOWN 813
+#define BS_ANALOG_VALUE_LEFT 737
 #define BS_ANALOG_VALUE_GO 856
 #define BS_ANALOG_VALUE_RESET 0
 
@@ -170,8 +178,6 @@ See LICENSE.txt for details
 //#define BLUETOOTH_SERIAL    Serial3
 
 #endif // USE_BLUETOOTH
-
-
 
 
 //////////////////////////////////////////////////////////////////////

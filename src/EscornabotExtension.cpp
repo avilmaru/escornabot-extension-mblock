@@ -9,6 +9,9 @@
 //
 // HISTORICO:
 // 12/05/2018 v1.0 - Release inicial.
+// 26/08/2018 v1.1 - Incorporación de funciones para la utilización de sensor de ultrasonidos,
+//                   incorporacion parámetro para cambiar el sentido de la marcha,
+//					 funciones de avance y retroceso acordes con el sentido de marcha original
 //
 // ---------------------------------------------------------------------------
 
@@ -44,6 +47,13 @@ EscornabotExtension::EscornabotExtension() {
 	#ifdef BUTTONS_ANALOG
 	pinMode(BS_ANALOG_PIN, BS_ANALOG_WIRES == 2 ? INPUT_PULLUP : INPUT);
 	#endif
+
+	// Ultrasonic sensor
+	#if ULTRASONIC_SENSOR
+	pinMode(TRIGGER_PIN, OUTPUT);
+	pinMode(ECHO_PIN, INPUT);
+	#endif
+
 
 }
 
@@ -119,7 +129,35 @@ void EscornabotExtension::turnLeft(int16_t degrees, float speedFactor)
 
 //////////////////////////////////////////////////////////////////////
 
+#if CHANGE_DIRECTION
+
 void EscornabotExtension::moveForward(int16_t units, float speedFactor)
+{
+	_moveBackward(units,speedFactor);
+}
+
+void EscornabotExtension::moveBackward(int16_t units, float speedFactor)
+{
+	_moveForward(units,speedFactor);
+}
+
+#else
+
+void EscornabotExtension::moveForward(int16_t units, float speedFactor)
+{
+	_moveForward(units,speedFactor);
+}
+
+void EscornabotExtension::moveBackward(int16_t units, float speedFactor)
+{
+	_moveBackward(units,speedFactor);
+}
+
+#endif
+
+//////////////////////////////////////////////////////////////////////
+
+void EscornabotExtension::_moveBackward(int16_t units, float speedFactor)
 {
 
 	if(units < 0) units = 0;
@@ -150,7 +188,7 @@ void EscornabotExtension::moveForward(int16_t units, float speedFactor)
 
 //////////////////////////////////////////////////////////////////////
 
-void EscornabotExtension::moveBackward(int16_t units, float speedFactor)
+void EscornabotExtension::_moveForward(int16_t units, float speedFactor)
 {
 
 	if(units < 0) units = 0;
@@ -391,6 +429,55 @@ int8_t EscornabotExtension::scanButtons()
     }
 
     return -1;
+}
+
+/////////////////////////////////////////////////////////////////////
+
+#endif
+
+
+//////////////////////////////////////////////////////////////////////
+/*
+ * ULTRASONIC SENSOR FUNCTIONS
+ */
+//////////////////////////////////////////////////////////////////////
+
+#if ULTRASONIC_SENSOR
+
+
+long EscornabotExtension::getDistance()
+{
+
+	long duration, distance;
+
+    digitalWrite(TRIGGER_PIN, LOW);
+    delayMicroseconds(4);
+    digitalWrite(TRIGGER_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIGGER_PIN, LOW);
+    duration = pulseIn(ECHO_PIN,HIGH);
+
+    distance = duration /((29.2)*2);   // distance in cm
+
+    // No Echo
+    if (distance == 0)
+      distance = 500;
+
+    return distance;
+
+}
+
+bool EscornabotExtension::obstacleDetected(long limitDistance){
+
+	if (limitDistance <= 0)
+		return false;
+
+	long distance = getDistance();
+	if (distance <= limitDistance)
+	  return true;
+	else
+	  return false;
+
 }
 
 /////////////////////////////////////////////////////////////////////
