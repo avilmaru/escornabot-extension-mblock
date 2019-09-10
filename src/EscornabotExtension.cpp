@@ -12,7 +12,8 @@
 // 26/08/2018 v1.1 - Incorporación de funciones para la utilización de sensor de ultrasonidos,
 //                   incorporacion parámetro para cambiar el sentido de la marcha,
 //					 funciones de avance y retroceso acordes con el sentido de marcha original
-//
+// 10/09/2019 v1.2 - Se añaden las funciones turnLedOnOff(String ledPin,uint8_t state)
+//					 y blinkingLed(int16_t num,String ledPin)
 // ---------------------------------------------------------------------------
 
 #include <Arduino.h>
@@ -36,6 +37,27 @@ EscornabotExtension::EscornabotExtension() {
 	// on-board LED Pin
 	#ifdef SIMPLE_LED_PIN
 	pinMode(SIMPLE_LED_PIN, OUTPUT);
+	#endif
+
+	// KeyPad LEDs
+	#ifdef KEYPAD_LED_PIN_UP
+	pinMode(KEYPAD_LED_PIN_UP, OUTPUT);
+	#endif
+
+	#ifdef KEYPAD_LED_PIN_RIGHT
+	pinMode(KEYPAD_LED_PIN_RIGHT, OUTPUT);
+	#endif
+
+	#ifdef KEYPAD_LED_PIN_DOWN
+	pinMode(KEYPAD_LED_PIN_DOWN, OUTPUT);
+	#endif
+
+	#ifdef KEYPAD_LED_PIN_LEFT
+	pinMode(KEYPAD_LED_PIN_LEFT, OUTPUT);
+	#endif
+
+	#ifdef KEYPAD_LED_PIN_GO
+	pinMode(KEYPAD_LED_PIN_GO, OUTPUT);
 	#endif
 
 	// Buzzer
@@ -157,7 +179,7 @@ void EscornabotExtension::moveBackward(int16_t units, float speedFactor)
 
 //////////////////////////////////////////////////////////////////////
 
-void EscornabotExtension::_moveBackward(int16_t units, float speedFactor)
+void EscornabotExtension::_moveForward(int16_t units, float speedFactor)
 {
 
 	if(units < 0) units = 0;
@@ -188,7 +210,7 @@ void EscornabotExtension::_moveBackward(int16_t units, float speedFactor)
 
 //////////////////////////////////////////////////////////////////////
 
-void EscornabotExtension::_moveForward(int16_t units, float speedFactor)
+void EscornabotExtension::_moveBackward(int16_t units, float speedFactor)
 {
 
 	if(units < 0) units = 0;
@@ -259,6 +281,7 @@ void EscornabotExtension::ledOff()
     digitalWrite(SIMPLE_LED_PIN, LOW);
 }
 
+
 //////////////////////////////////////////////////////////////////////
 
 void EscornabotExtension::blinkingLed(int16_t num)
@@ -270,6 +293,73 @@ void EscornabotExtension::blinkingLed(int16_t num)
 		digitalWrite(SIMPLE_LED_PIN, HIGH);
 		delay(200);
 		digitalWrite(SIMPLE_LED_PIN, LOW);
+		delay(200);
+	}
+}
+
+#endif
+
+//////////////////////////////////////////////////////////////////////
+
+#if defined(SIMPLE_LED_PIN) || defined (KEYPAD_LED_PIN_UP) || defined(KEYPAD_LED_PIN_RIGHT) || defined(KEYPAD_LED_PIN_DOWN) || defined(KEYPAD_LED_PIN_LEFT) || defined(KEYPAD_LED_PIN_GO)
+
+void EscornabotExtension::turnLedOnOff(uint8_t state,String ledPin)
+{
+	uint8_t _pin = 13;
+
+	if (ledPin.length() == 0)
+		return;
+
+	if(state < 0) state = 0;
+	if(state > 1) state = 1;
+
+	if (ledPin =="ONBOARD")
+		_pin = SIMPLE_LED_PIN;
+	else if (ledPin =="UP")
+		_pin = KEYPAD_LED_PIN_UP;
+	else if (ledPin =="RIGHT")
+		_pin = KEYPAD_LED_PIN_RIGHT;
+	else if (ledPin =="DOWN")
+		_pin = KEYPAD_LED_PIN_DOWN;
+	else if (ledPin =="LEFT")
+		_pin = KEYPAD_LED_PIN_LEFT;
+	else if (ledPin =="GO")
+		_pin = KEYPAD_LED_PIN_GO;
+
+	digitalWrite(_pin, state);
+
+}
+
+
+//////////////////////////////////////////////////////////////////////
+
+void EscornabotExtension::blinkingLed(String ledPin,int16_t num)
+{
+	uint8_t _pin = 13;
+
+	if (ledPin.length() == 0)
+		return;
+
+	if(num < 0) num = 0;
+
+	if (ledPin =="ONBOARD")
+		_pin = SIMPLE_LED_PIN;
+	else if (ledPin =="UP")
+		_pin = KEYPAD_LED_PIN_UP;
+	else if (ledPin =="RIGHT")
+		_pin = KEYPAD_LED_PIN_RIGHT;
+	else if (ledPin =="DOWN")
+		_pin = KEYPAD_LED_PIN_DOWN;
+	else if (ledPin =="LEFT")
+		_pin = KEYPAD_LED_PIN_LEFT;
+	else if (ledPin =="GO")
+		_pin = KEYPAD_LED_PIN_GO;
+
+	for (int16_t i = 0; i < num; i++)
+	{
+		digitalWrite(_pin, HIGH);
+		delay(200);
+		digitalWrite(_pin, LOW);
 		delay(200);
 	}
 }

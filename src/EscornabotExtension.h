@@ -12,7 +12,8 @@
 // 26/08/2018 v1.1 - Incorporación de funciones para la utilización de sensor de ultrasonidos,
 //                   incorporacion parámetro para cambiar el sentido de la marcha,
 //					 funciones de avance y retroceso acordes con el sentido de marcha original
-//
+// 10/09/2019 v1.2 - Se añaden las funciones turnLedOnOff(String ledPin,uint8_t state)
+//					 y blinkingLed(int16_t num,String ledPin)
 // ---------------------------------------------------------------------------
 
 
@@ -61,12 +62,18 @@ public:
 	void moveBackward(int16_t units, float speedFactor);
 	#endif
 
-	// LED Pin 13
+	// LED Pin
 	#ifdef SIMPLE_LED_PIN
 	void ledOn();
 	void ledOff();
 	void blinkingLed(int16_t num);
 	#endif
+
+	#if defined(SIMPLE_LED_PIN) || defined (KEYPAD_LED_PIN_UP) || defined(KEYPAD_LED_PIN_RIGHT) || defined(KEYPAD_LED_PIN_DOWN) || defined(KEYPAD_LED_PIN_LEFT) || defined(KEYPAD_LED_PIN_GO)
+	void turnLedOnOff(uint8_t state,String ledPin);
+	void blinkingLed(String ledPin,int16_t num);
+	#endif
+
 
 	 // Buzzer
 	#ifdef BUZZER_PIN
